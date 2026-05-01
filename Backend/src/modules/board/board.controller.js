@@ -1,8 +1,11 @@
 const boardModel = require('../../models/board.model');
 const membershipModel = require('../../models/membership.model');
+const { getIO } = require('../../socket/socket');
+
 
 exports.createBoard = async (req, res) => {
   try {
+    const io = getIO();
     const { title } = req.body;
 
     if (!title) {
@@ -22,6 +25,7 @@ exports.createBoard = async (req, res) => {
       role: 'admin',
     });
 
+    io.emit("boardCreated", newBoard);
     res.status(201).json({
       message: "Board created successfully",
       boardId: newBoard._id,
